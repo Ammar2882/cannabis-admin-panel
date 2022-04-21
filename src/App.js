@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { SideAndNavbar } from "./components/major-components/SideAndNavbar";
 import { Products } from './components/major-components/Products'
 import { Orders } from "./components/major-components/Orders";
+import { Drivers } from "./components/major-components/Drivers";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             <Route index element={<DashboardHeroSection />} />
             <Route path='products' element={<Products />} />
             <Route path='orders' element={<Orders />} />
+            <Route path='drivers' element={<Drivers />} />
           </Route>
         </Routes>
       </Router>

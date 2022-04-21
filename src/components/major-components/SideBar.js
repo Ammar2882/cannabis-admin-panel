@@ -40,7 +40,7 @@ const SideBar = () => {
         },
         {
             title: 'Drivers',
-            path: '/drivers',
+            path: '/main/drivers',
             svg: driver
         },
         {

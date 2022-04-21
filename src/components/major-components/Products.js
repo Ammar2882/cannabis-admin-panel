@@ -5,7 +5,17 @@ import { useSelector, useDispatch } from "react-redux"
 import { Modal } from "../minor-components/Modal"
 import { AddProductsForm } from "../minor-components/AddProductsForm"
 
-
+const tableColumnsReal = [
+    'Photo',
+    'Name',
+    'Type',
+    'Category',
+    'Sub-Category',
+    'Brand',
+    'Price',
+    'Effects (upl, eup, ene, cre, foc)',
+    'Actions'
+]
 export const Products = () => {
     const dispatch = useDispatch()
     const [isOpen, setIsOpen] = useState(false)
@@ -27,7 +37,6 @@ export const Products = () => {
         <>
             {console.log("updated product : ", products)}
             <div className="bg-gray-50   z-0">
-
                 <div className=" mt-24 bg-gray-50 ml-[20%]  w-[78%]">
                     <div className="flex items-center justify-end py-4 px-4">
                         <button onClick={() => {
@@ -45,7 +54,7 @@ export const Products = () => {
                             <div className="flex justify-center items-center py-8 text-lg">No Products Found</div>
                         )
                             : (
-                                <ActionsTable isOpen={isUpdateOpen} modal={setIsUpdateOpen} key={parseInt(Math.random() * 10000)} tableDataReal={products} />
+                                <ActionsTable isOpen={isUpdateOpen} tableColumnsReal={tableColumnsReal} checkBox={true} isProduct={true} modal={setIsUpdateOpen} key={parseInt(Math.random() * 10000)} tableDataReal={products} />
                             )
                     }
                 </div>

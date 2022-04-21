@@ -1,7 +1,8 @@
 import topArrow from '../../assets/top-arrow.svg'
 import bottomArrow from '../../assets/bottom-arrow.svg'
 import ReactPaginate from "react-paginate";
-import { useEffect, useMemo, useState } from 'react'
+import { Dropdown } from './DropDown'
+import { useState } from 'react'
 import { useNavigate } from 'react-router';
 import { baseURL } from '../../constants/baseURL';
 import { useDispatch } from 'react-redux';
@@ -14,18 +15,8 @@ export const ActionsTable = (props) => {
     const alert = useAlert()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const tableColumnsReal = [
-        'Photo',
-        'Name',
-        'Type',
-        'Category',
-        'Sub-Category',
-        'Brand',
-        'Price',
-        'Effects (upl, eup, ene, cre, foc)',
-        'Actions'
-    ]
-    const tableColumns = tableColumnsReal
+
+    const tableColumns = props.tableColumnsReal
     const tableData = props.tableDataReal
     const [data, setData] = useState(tableData);
     const [pageNumber, setPageNumber] = useState(0);
@@ -113,11 +104,14 @@ export const ActionsTable = (props) => {
                                     <table className="table-auto w-full ">
                                         <thead className="text-sm w-full h-14 bg-myBg font-semibold uppercase text-gray-600 ">
                                             <tr>
-                                                <th className='py-4'>
-                                                    <p className="p-2 whitespace-nowrap flex items-center w-1/2">
-                                                        {/* <input className='mx-2' type="checkbox" id="selectAll" name="A3-confirmation" value="selectAll" /> */}
-                                                    </p>
-                                                </th>
+                                                {props.checkBox ? (
+                                                    <th className='py-4'>
+                                                        <p className="p-2 whitespace-nowrap flex items-center w-1/2">
+                                                            {/* <input className='mx-2' type="checkbox" id="selectAll" name="A3-confirmation" value="selectAll" /> */}
+                                                        </p>
+                                                    </th>
+                                                ) : ''}
+
                                                 {
                                                     tableColumns.map((item, index) => (
                                                         <th key={index} className="p-2 whitespace-nowrap font-semibold text-left">
@@ -132,9 +126,14 @@ export const ActionsTable = (props) => {
                                             {!searchText ? <>
                                                 {data.slice(pagesVisited, pagesVisited + itemsPerPage).map((item, index) => (
                                                     <tr key={index}>
-                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap  ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <input onChange={() => handleSelectedID(item._id)} className='mx-2 cursor-pointer' type="checkbox" />
-                                                        </td>
+                                                        {props.checkBox ? (
+                                                            <td className={`text-left text-xs px-2 py-8 whitespace-nowrap  ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                                <input onChange={() => handleSelectedID(item._id)} className='mx-2 cursor-pointer' type="checkbox" />
+                                                            </td>
+                                                        ) : (
+                                                            ''
+                                                        )}
+
                                                         <td className={`text-left  px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
                                                             <img src={`${baseURL}${item.productPhoto}`} className={`text-left text-xs w-14 h-14 rounded-[50%]`} />
                                                         </td>
@@ -163,15 +162,17 @@ export const ActionsTable = (props) => {
                                                             ${item.effects.creative} / ${item.effects.focused}`}</p>
 
                                                         </td>
-                                                        <td className={`text-left text-md px-2 py-8 whitespace-nowrap  ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <button onClick={() => {
-                                                                global.editId = item._id
-                                                                props.modal(true)
+                                                        {props.isProduct ? (
+                                                            <td className={`text-left text-md px-2 py-8 whitespace-nowrap  ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                                <button onClick={() => {
+                                                                    global.editId = item._id
+                                                                    props.modal(true)
 
-                                                            }} className='py-2 px-4 bg-myBg text-xs rounded-lg'>
-                                                                View
-                                                            </button>
-                                                        </td>
+                                                                }} className='py-2 px-4 bg-myBg text-xs rounded-lg'>
+                                                                    View
+                                                                </button>
+                                                            </td>
+                                                        ) : <Dropdown />}
                                                     </tr>
                                                 ))}
                                                 <Modal open={props.isOpen} onClose={() => props.modal(false)} >

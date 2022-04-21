@@ -9,19 +9,19 @@ import { TimeLine } from "../minor-components/TimeLine"
 import { Table } from "../minor-components/Table"
 import io from "socket.io-client";
 import { useEffect } from "react"
-const socket = io('http://099c-39-41-165-237.ngrok.io')
+// const socket = io('http://099c-39-41-165-237.ngrok.io')
 
 const DashboardHeroSection = () => {
-    useEffect(() => {
-        socket.on('connection', 'blablabla')
-        socket.emit('join', 'ammar admin')
+    // useEffect(() => {
+    //     socket.on('connection', 'blablabla')
+    //     socket.emit('join', 'ammar admin')
 
-        setTimeout(() => {
-            socket.on('hey', (data) => {
-                console.log(data, "data received at successfull connection with sockety io server")
-            })
-        }, 3000)
-    }, [])
+    //     setTimeout(() => {
+    //         socket.on('hey', (data) => {
+    //             console.log(data, "data received at successfull connection with sockety io server")
+    //         })
+    //     }, 3000)
+    // }, [])
 
 
     return (
