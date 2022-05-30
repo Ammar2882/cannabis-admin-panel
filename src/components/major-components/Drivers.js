@@ -1,40 +1,50 @@
-import { useState, useEffect } from 'react'
-import { axiosInstance } from '../../constants/axiosInstance'
-import BerbixVerify from "berbix-react";
+import { ActionsTable } from "../minor-components/ActionsTable"
+import { useEffect, useState, useMemo } from "react"
+import { getUnApprovedDrivers } from "../../redux/Actions/DriverActions"
+import { useSelector, useDispatch } from "react-redux"
+import { Modal } from "../minor-components/Modal"
 
 
+const unApprovedDrivers = [
+    'Photo',
+    'Name',
+    'Email',
+    'Phone Number',
+    'Driving License',
+    'Verified',
+    'Blocked',
+    'Actions'
+
+]
 export const Drivers = () => {
-    const [clientToken, setClientToken] = useState(null)
+    const dispatch = useDispatch()
+
+
+    const { unapprovedDrivers } = useSelector(
+        (state) => state.driversReducer
+    );
+
     useEffect(() => {
-        getToken()
+        dispatch(getUnApprovedDrivers())
     }, [])
-    const getToken = async () => {
-        const res = await axiosInstance.post('/api/v1/driver/idverification', {
-            id: "6226f738cb889156f8bc5495"
-        })
-        console.log(res.data.data.clientToken, " : res")
-        setClientToken(res.data.data.clientToken)
 
-    }
+
     return (
-        <div className='py-2 bg-gray-50'>
-            <div className='divide-y  divide-gray-100 bg-white rounded-lg  shadow-lg ml-48 mt-48'>
-                {clientToken ? (
-                    <BerbixVerify
-                        clientToken={clientToken}
-                        onComplete={() => {
-                            // the user has completed the verification flow
-                            console.log('transaction completed')
-                        }}
-                    />
-                ) :
-                    (
-                        <h1>hello world</h1>
-                    )
+        <>
+            {console.log(unApprovedDrivers, " :drivers")}
+            <div className="bg-gray-50   z-0">
+                <div className=" mt-24 bg-gray-50 ml-[20%]  w-[78%]">
 
-                }
-
+                    {
+                        unapprovedDrivers.length === 0 ? (
+                            <div className="flex justify-center items-center py-8 text-lg">No Drivers Found</div>
+                        )
+                            : (
+                                <ActionsTable tableColumnsReal={unApprovedDrivers} key={parseInt(Math.random() * 10000)} tableDataReal={unapprovedDrivers} />
+                            )
+                    }
+                </div>
             </div>
-        </div>
+        </>
     )
 }

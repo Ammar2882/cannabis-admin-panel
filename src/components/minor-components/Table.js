@@ -1,155 +1,22 @@
 import topArrow from '../../assets/top-arrow.svg'
 import bottomArrow from '../../assets/bottom-arrow.svg'
 import ReactPaginate from "react-paginate";
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 export const Table = (props) => {
-    const tableColumnsReal = [
-        'ID',
-        'User Name',
-        'Email',
-        'Order ID',
-        'Product Name',
-        'Price',
-        'Date',
-    ]
-    const tableColumns = useMemo(() => tableColumnsReal, [tableColumnsReal])
-
-    const tableDataReal = [
-        {
-            ID: '#1',
-            userName: 'Ammar Ahmed',
-            email: 'ammar.cnation@gmail.com',
-            orderID: '#11221122',
-            productName: 'Hash type1',
-            price: '5566$',
-            date: '22/10/2022'
-        },
-        {
-            ID: '#2',
-            userName: 'Jhon Cena',
-            email: 'cena@gmail.com',
-            orderID: '#9090',
-            productName: 'Hash type22',
-            price: '6786$',
-            date: '23/10/2022'
-        },
-        {
-            ID: '#3',
-            userName: 'Under Taker',
-            email: 'under@gmail.com',
-            orderID: '#67632',
-            productName: 'Hash type33',
-            price: '9890$',
-            date: '23/10/2022'
-        },
-        {
-            ID: '#4',
-            userName: 'Randy Orton',
-            email: 'randy@gmail.com',
-            orderID: '#73645',
-            productName: 'Hash type44',
-            price: '67890-9876$',
-            date: '24/10/2022'
-        },
-        {
-            ID: '#5',
-            userName: 'Mysterio',
-            email: 'mysterio@gmail.com',
-            orderID: '#66537',
-            productName: 'Hash type44',
-            price: '23416$',
-            date: '25/10/2022'
-        },
-        {
-            ID: '#6',
-            userName: 'Miz',
-            email: 'miz@gmail.com',
-            orderID: '#5445554',
-            productName: 'Hash type55',
-            price: '5678$',
-            date: '26/10/2022'
-        }
-        ,
-        {
-            ID: '#6',
-            userName: 'Miz',
-            email: 'miz@gmail.com',
-            orderID: '#5445554',
-            productName: 'Hash type55',
-            price: '5678$',
-            date: '26/10/2022'
-        }
-        ,
-        {
-            ID: '#6',
-            userName: 'Miz',
-            email: 'miz@gmail.com',
-            orderID: '#5445554',
-            productName: 'Hash type55',
-            price: '5678$',
-            date: '26/10/2022'
-        }
-        ,
-        {
-            ID: '#6',
-            userName: 'Miz',
-            email: 'miz@gmail.com',
-            orderID: '#5445554',
-            productName: 'Hash type55',
-            price: '5678$',
-            date: '26/10/2022'
-        }
-        ,
-        {
-            ID: '#7',
-            userName: 'hassan',
-            email: 'miz@gmail.com',
-            orderID: '#5445554',
-            productName: 'Hash type55',
-            price: '5678$',
-            date: '26/10/2022'
-        }
-        ,
-        {
-            ID: '#7',
-            userName: 'hassan',
-            email: 'miz@gmail.com',
-            orderID: '#5445554',
-            productName: 'Hash type55',
-            price: '5678$',
-            date: '26/10/2022'
-        }
-        ,
-        {
-            ID: '#7',
-            userName: 'hassan',
-            email: 'miz@gmail.com',
-            orderID: '#5445554',
-            productName: 'Hash type55',
-            price: '5678$',
-            date: '26/10/2022'
-        }
-    ]
-    const tableData = useMemo(() => tableDataReal, [tableDataReal])
-
-
-    const [searchText, setSearchText] = useState("");
-
-
+    const tableColumns = props.ordersColumns
+    const tableData = props.ordersData
+    console.log(tableData, ":table data")
+    const [searchText, setSearchText] = useState('');
     const [pageNumber, setPageNumber] = useState(0);
     const [myFilteredData, setMyFilteredData] = useState([]);
-
     const [itemsPerPage, setItemsPerPage] = useState(5)
     const [data, setData] = useState(tableData);
     const pagesVisited = pageNumber * itemsPerPage;
-
     const pageCount = Math.ceil(data.length / itemsPerPage);
 
     const changePage = ({ selected }) => {
         setPageNumber(selected);
     };
-
-
     const handleChange = value => {
         setSearchText(value);
         filterData(value);
@@ -171,6 +38,7 @@ export const Table = (props) => {
         }
 
     }
+    console.log('search : ', searchText)
     return (
         <div className='divide-y  divide-gray-100 bg-white rounded-lg  shadow-lg'>
 
@@ -235,27 +103,7 @@ export const Table = (props) => {
                                             {data.slice(pagesVisited, pagesVisited + itemsPerPage).map((item, index) => (
                                                 <tr key={index}>
                                                     <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                        <p className={`text-left text-xs `}>{item.ID}</p>
-                                                    </td>
-                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                        <p className={`text-left text-xs `}>{item.userName}</p>
-                                                    </td>
-                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                        <p className="text-left text-xs">{item.email}</p>
-                                                    </td>
-
-                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                        <p className="text-left text-xs">{item.orderID}</p>
-                                                    </td>
-                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                        <p className="text-left text-xs">{item.productName}</p>
-                                                    </td>
-
-                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                        <p className="text-left text-xs">{item.price}</p>
-                                                    </td>
-                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                        <p className="text-left text-xs">{item.date}</p>
+                                                        <p className={`text-left text-xs `}>{item.details.map((f) => f.productId.name)}</p>
                                                     </td>
                                                 </tr>
 
@@ -266,28 +114,9 @@ export const Table = (props) => {
                                                 {myFilteredData.map((item, index) => (
                                                     <tr>
                                                         <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <p className={`text-left text-xs `}>{item.ID}</p>
-                                                        </td>
-                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <p className={`text-left text-xs `}>{item.userName}</p>
-                                                        </td>
-                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <p className="text-left text-xs">{item.email}</p>
+                                                            <p className={`text-left text-xs `}>{item.details.map((f) => f.productId.name)}</p>
                                                         </td>
 
-                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <p className="text-left text-xs">{item.orderID}</p>
-                                                        </td>
-                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <p className="text-left text-xs">{item.productName}</p>
-                                                        </td>
-
-                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <p className="text-left text-xs">{item.price}</p>
-                                                        </td>
-                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <p className="text-left text-xs">{item.date}</p>
-                                                        </td>
                                                     </tr>
                                                 ))}
                                             </>

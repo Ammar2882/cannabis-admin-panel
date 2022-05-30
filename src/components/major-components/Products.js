@@ -27,7 +27,6 @@ export const Products = () => {
     );
 
     useEffect(() => {
-        console.log('fghjkghjkghjklhyjukighjk')
         dispatch(getProducts())
     }, [isOpen, isUpdateOpen])
 
@@ -35,7 +34,6 @@ export const Products = () => {
     return (
 
         <>
-            {console.log("updated product : ", products)}
             <div className="bg-gray-50   z-0">
                 <div className=" mt-24 bg-gray-50 ml-[20%]  w-[78%]">
                     <div className="flex items-center justify-end py-4 px-4">
@@ -51,7 +49,7 @@ export const Products = () => {
                     </Modal>
                     {
                         products.length === 0 ? (
-                            <div className="flex justify-center items-center py-8 text-lg">No Products Found</div>
+                            <div className="flex justify-center items-center py-8 text-lg h-screen">No Products Found</div>
                         )
                             : (
                                 <ActionsTable isOpen={isUpdateOpen} tableColumnsReal={tableColumnsReal} checkBox={true} isProduct={true} modal={setIsUpdateOpen} key={parseInt(Math.random() * 10000)} tableDataReal={products} />

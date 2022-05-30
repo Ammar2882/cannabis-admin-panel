@@ -7,6 +7,7 @@ import { SideAndNavbar } from "./components/major-components/SideAndNavbar";
 import { Products } from './components/major-components/Products'
 import { Orders } from "./components/major-components/Orders";
 import { Drivers } from "./components/major-components/Drivers";
+import { Categories } from "./components/major-components/Categories";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path='products' element={<Products />} />
             <Route path='orders' element={<Orders />} />
             <Route path='drivers' element={<Drivers />} />
+            <Route path='categories' element={<Categories />} />
           </Route>
         </Routes>
       </Router>

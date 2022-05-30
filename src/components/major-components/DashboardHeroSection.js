@@ -51,7 +51,7 @@ const DashboardHeroSection = () => {
                             <TimeLine />
                         </div>
                         <div className="px-4">
-                            <Table />
+                            {/* <Table /> */}
                             {/* <ActionsTable /> */}
 
                         </div>

@@ -45,7 +45,7 @@ const SideBar = () => {
         },
         {
             title: 'Categories',
-            path: '/categories',
+            path: '/main/categories',
             svg: category
         },
         {
