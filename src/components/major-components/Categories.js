@@ -2,21 +2,18 @@ import { useEffect, useState } from "react"
 import BerbixVerify from "berbix-react";
 import { axiosInstance } from '../../constants/axiosInstance'
 
-
+import socketIOClient from "socket.io-client";
+const ENDPOINT = "https://www.berbix.com";
 export const Categories = () => {
+
     const [token, setToken] = useState(null)
-    const verificationResult = (event) => {
-        console.log('A key was pressed', event);
-      };
+    const socket = socketIOClient(ENDPOINT);
+    socket.on('Verification status changed', (data)=>{
+        console.log(data , "data he oeee")
+    })
+   
     useEffect(() => {
         getdata()
-   
-            window.addEventListener('Verification status changed',verificationResult );
-        
-            // cleanup this component
-            return () => {
-              window.removeEventListener('Verification status changed', verificationResult);
-            };
     
     },[])
 
