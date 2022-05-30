@@ -4,9 +4,20 @@ import { axiosInstance } from '../../constants/axiosInstance'
 
 
 export const Categories = () => {
-    const [token, setToken] = useState('')
+    const [token, setToken] = useState(null)
+    const verificationResult = (event) => {
+        console.log('A key was pressed', event);
+      };
     useEffect(() => {
         getdata()
+   
+            window.addEventListener('Verification status changed',verificationResult );
+        
+            // cleanup this component
+            return () => {
+              window.removeEventListener('Verification status changed', verificationResult);
+            };
+    
     },[])
 
     const getdata = async () => {
@@ -19,6 +30,7 @@ export const Categories = () => {
 
     return (
         <>
+         {token?(
             <div className="w-96 relative right-0">
                 <BerbixVerify
                     clientToken={token}
@@ -28,6 +40,11 @@ export const Categories = () => {
                     }}
                 />
             </div>
+         ):(
+             <div>
+                 loading ...
+             </div>
+         )}
         </>
     )
 }
