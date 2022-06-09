@@ -6,7 +6,7 @@ export const Categories = () => {
 
     const [token, setToken] = useState(null)
    
-   
+
     useEffect(() => {
         getdata()
     
@@ -14,7 +14,7 @@ export const Categories = () => {
 
     const getdata = async () => {
 
-        const orders = await axiosInstance.post(`/api/v1/driver/idverification`, { id: "6246d8971a906750e45d354f" })
+        const orders = await axiosInstance.post(`/api/v1/user/idverification`, { id: "62163674cb409340e84553da",type:"web" })
         console.log(orders.data.data, " :inside api")
         setToken(orders.data.data.clientToken)
     }
