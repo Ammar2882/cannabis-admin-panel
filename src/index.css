@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer base {
+    :root {
+      --overlay-loader: 0 0 0;
+    }
+  }

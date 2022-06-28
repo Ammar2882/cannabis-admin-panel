@@ -2,15 +2,15 @@ import topArrow from '../../assets/top-arrow.svg'
 import bottomArrow from '../../assets/bottom-arrow.svg'
 import ReactPaginate from "react-paginate";
 import { useState } from 'react'
-export const Table = (props) => {
-    const tableColumns = props.ordersColumns
-    const tableData = props.ordersData
-    console.log(tableData, ":table data")
+import { Dropdown } from './DropDown';
+export const Table = ({ordersColumns , ordersData,title,pendingOrders,forceReload , setForceReload , setLoading}) => {
+    const tableColumns = ordersColumns
+    const tableData = ordersData
+    const [data, setData] = useState(tableData);
     const [searchText, setSearchText] = useState('');
     const [pageNumber, setPageNumber] = useState(0);
     const [myFilteredData, setMyFilteredData] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(5)
-    const [data, setData] = useState(tableData);
     const pagesVisited = pageNumber * itemsPerPage;
     const pageCount = Math.ceil(data.length / itemsPerPage);
 
@@ -32,18 +32,16 @@ export const Table = (props) => {
                     item[key].toString().toLowerCase().includes(lowercasedValue)
                 );
             });
-            console.log(filteredData)
             setData(filteredData);
             setMyFilteredData(filteredData)
         }
 
     }
-    console.log('search : ', searchText)
     return (
         <div className='divide-y  divide-gray-100 bg-white rounded-lg  shadow-lg'>
 
             <div className='px-5 pt-4 h-10 my-0 flex flex-col items-start justify-between'>
-                <h2 className='font-semibold text-gray-800 text-lg'>Order List</h2>
+                <h2 className='font-semibold text-gray-800 text-lg'>{title}</h2>
                 <p className='text-xs'>Lorem Ipsum Lorem Ipsum</p>
             </div>
 
@@ -94,16 +92,47 @@ export const Table = (props) => {
 
                                                 ))
                                             }
-
+                                            {pendingOrders ? (
+                                                <th>
+                                                    Actions
+                                                </th>
+                                            ) : null}
                                         </tr>
                                     </thead>
                                     <tbody className="text-sm  divide-gray-100">
                                         {!searchText ? <>
 
-                                            {data.slice(pagesVisited, pagesVisited + itemsPerPage).map((item, index) => (
+                                            {data?.slice(pagesVisited, pagesVisited + itemsPerPage).map((item, index) => (
                                                 <tr key={index}>
                                                     <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                        <p className={`text-left text-xs `}>{item.details.map((f) => f.productId.name)}</p>
+                                                        <p className={`text-left text-xs `}>{item.productName}</p>
+                                                    </td>
+                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                        <p className={`text-left text-xs `}>{item.productQuantity}</p>
+                                                    </td>
+                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                        <p className={`text-left text-xs `}>{item.totalPrice}</p>     
+                                                    </td>
+
+                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                        <p className={`text-left text-xs `}>{item.city}</p>
+                                                    </td>
+                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                        <p className={`text-left text-xs `}>{item.address}</p>
+                                                    </td>
+                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                        <p className={`text-left text-xs `}>{item.userName}</p>
+                                                    </td>
+                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                        <p className={`text-left text-xs `}>{item.userEmail}</p>
+                                                    </td>
+                                                    <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                        <p className={`text-left text-xs `}>{item.userPhoneNumber}</p>
+                                                    </td>
+                                                    <td className={`text-left text-md relative px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                        {pendingOrders ? (
+                                                            <Dropdown setLoading={setLoading} forceReload={forceReload} setForceReload={setForceReload} id={item.id} orders={true} />
+                                                        ) : null}
                                                     </td>
                                                 </tr>
 
@@ -114,9 +143,35 @@ export const Table = (props) => {
                                                 {myFilteredData.map((item, index) => (
                                                     <tr>
                                                         <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                                            <p className={`text-left text-xs `}>{item.details.map((f) => f.productId.name)}</p>
+                                                            <p className={`text-left text-xs `}>{item.productName}</p>
+                                                        </td>
+                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                            <p className={`text-left text-xs `}>{item.productQuantity}</p>
+                                                        </td>
+                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                            <p className={`text-left text-xs `}>{item.totalPrice}</p>
                                                         </td>
 
+                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                            <p className={`text-left text-xs `}>{item.city}</p>
+                                                        </td>
+                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                            <p className={`text-left text-xs `}>{item.address}</p>
+                                                        </td>
+                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                            <p className={`text-left text-xs `}>{item.userName}</p>
+                                                        </td>
+                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                            <p className={`text-left text-xs `}>{item.userEmail}</p>
+                                                        </td>
+                                                        <td className={`text-left text-xs px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                            <p className={`text-left text-xs `}>{item.userPhoneNumber}</p>
+                                                        </td>
+                                                        <td className={`text-left text-md relative px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                                                            {pendingOrders ? (
+                                                                <Dropdown setLoading={setLoading} forceReload={forceReload} setForceReload={setForceReload} id={item.id} orders={true} />
+                                                            ) : null}
+                                                        </td>
                                                     </tr>
                                                 ))}
                                             </>
@@ -139,11 +194,11 @@ export const Table = (props) => {
                             nextLabel={"Next"}
                             pageCount={pageCount}
                             onPageChange={changePage}
-                            containerClassName={"flex justify-around items-center w-full  text-xs rounded "}
-                            previousLinkClassName={"py-2 px-4 rounded bg-gray-200 w-24 hover:bg-gray-300 mx-2"}
-                            nextLinkClassName={"py-2 px-4 rounded bg-gray-200 w-24 hover:bg-gray-300 mx-2"}
-                            disabledClassName={"pointer-events-none mx-2  "}
-                            activeClassName={"py-2 px-4 rounded bg-myBg hover:bg-[#edcb58] hover:text-white text-xs mx-2"}
+                            containerClassName={"flex justify-between gap-3 items-center w-full text-xs rounded no-underline"}
+                            previousLinkClassName={"py-2 px-4 rounded bg-gray-200 w-24 hover:bg-gray-300 mx-2 no-underline"}
+                            nextLinkClassName={"py-2 px-4 rounded bg-gray-200 w-24 hover:bg-gray-300 mx-2 no-underline"}
+                            disabledClassName={"pointer-events-none no-underline"}
+                            activeClassName={"py-2 px-4 rounded bg-myBg hover:bg-[#edcb58] hover:text-white text-xs mx-2 no-underline"}
                         />
                     </div>
                 </div>

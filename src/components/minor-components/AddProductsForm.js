@@ -80,16 +80,12 @@ export const AddProductsForm = (props) => {
                 {console.log("edit item : ", editItem)}
                 <div style={{ scrollbarWidth: 'thin' }} className="container h-full mx-auto overflow-y-scroll">
                     <div className="flex justify-center">
-
                         <div className="w-full flex ">
-
                             <div
                                 className="w-2/3 h-auto  lg:block lg:w-5/12 bg-cover md:hidden "
                                 style={{
                                     backgroundImage: `linear-gradient( to right, rgba(0,0,0,0.2) ,rgba(0, 0, 0, 0.2)) ,url(${cannabisForm})`, backgroundSize: 'cover',
                                     backgroundPosition: 'center',
-
-
                                 }}
                             >
 
@@ -116,27 +112,8 @@ export const AddProductsForm = (props) => {
                                                 creative: editItem.length !== 0 ? parseInt(editItem[0].effects.creative) : 0,
                                                 focused: editItem.length !== 0 ? parseInt(editItem[0].effects.focused) : 0,
                                             }
-                                        }
-                                        // {
-                                        //     image: '',
-                                        //     name: '',
-                                        //     type: '',
-                                        //     category: '',
-                                        //     description: '',
-                                        //     subCategory: '',
-                                        //     brand: '',
-                                        //     price: '',
-                                        //     effects: {
-                                        //         uplifted: 0,
-                                        //         euphoric: 0,
-                                        //         energetic: 0,
-                                        //         creative: 0,
-                                        //         focused: 0,
-                                        //     }
-                                        // }
+                                        } 
                                     }
-
-
                                     validationSchema={SignupSchema}
                                     onSubmit={async (values) => {
                                         var formData = new FormData();
@@ -155,10 +132,6 @@ export const AddProductsForm = (props) => {
                                             formData.append('image', image)
                                             dispatch(addProduct(values, formData, navigate, alert, props.modal))
                                         }
-                                        console.log(values, "submitted values")
-
-
-
                                     }}
                                 >
                                     {({ isSubmitting, values, setFieldValue, handleChange }) => (

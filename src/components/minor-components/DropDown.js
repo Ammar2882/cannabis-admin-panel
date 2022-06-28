@@ -6,16 +6,32 @@ import dropDown from '../../assets/down-arrow.svg'
 import { useDispatch } from 'react-redux'
 import { updateDriverStatus } from '../../redux/Actions/DriverActions'
 import { useAlert } from 'react-alert'
-export const Dropdown = ({ verified, blocked, id }) => {
+import { axiosInstance } from '../../constants/axiosInstance'
+import { selectProgressBarState } from '../../redux/Actions/ProgressBarActions'
+export const Dropdown = ({ verified, blocked, id,orders,forceReload,setForceReload}) => {
     const dispatch = useDispatch()
     const alert = useAlert()
     const navigate = useNavigate()
-    console.log(verified, blocked, id)
+    const updateOrderStatus=async()=>{
+        dispatch(selectProgressBarState(true))
+        const updatedOrder = await axiosInstance.patch('api/v1/order/updateorderstatusadmin',{status:1},{params:{
+            orderId:id
+        }})
+        if(updatedOrder.data.success){
+            dispatch(selectProgressBarState(false))
+            alert.show('Order Updated Successfully')
+            setForceReload(!forceReload)
+        }
+        else{
+            dispatch(selectProgressBarState(false))
+            alert.show('Failed to Update Order')
+        }
+    }
     return (
         <Menu className=''>
             {({ open }) => (
                 <>
-                    <Menu.Button ><img className='w-[15px] cursor-pointer' src={dropDown} alt="drop down" /></Menu.Button>
+                    <Menu.Button ><img className={`w-[15px] cursor-pointer ${orders?"mr-12":null}`} src={dropDown} alt="drop down" /></Menu.Button>
 
                     {/* Use the Transition component. */}
                     <Transition
@@ -29,6 +45,8 @@ export const Dropdown = ({ verified, blocked, id }) => {
                     >
                         {/* Mark this component as `static` */}
                         <Menu.Items static className='absolute top-18 left-[-45px] z-50 flex flex-col'>
+                        {!orders ? (
+                            <>
                             <Menu.Item>
                                 {({ active }) => (
 
@@ -53,6 +71,24 @@ export const Dropdown = ({ verified, blocked, id }) => {
                                     </button>
                                 )}
                             </Menu.Item>
+                            </>
+                        ):(
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`py-2 px-4 no-underline  ${active ? 'bg-myBg' : 'bg-gray-200'
+                                            }`}
+                                        onClick={()=>{
+                                            updateOrderStatus()
+                                        }}
+                                    >
+                                        Approve Order
+
+                                    </button>
+                                )}
+                            </Menu.Item>
+                        )}
+                           
 
                         </Menu.Items>
                     </Transition>

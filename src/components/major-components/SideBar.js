@@ -44,8 +44,8 @@ const SideBar = () => {
             svg: driver
         },
         {
-            title: 'Categories',
-            path: '/main/categories',
+            title: 'Tax',
+            path: '/main/tax',
             svg: category
         },
         {
@@ -64,8 +64,8 @@ const SideBar = () => {
             svg: account
         },
         {
-            title: 'Store Locator',
-            path: '/storelocator',
+            title: 'Radius',
+            path: '/main/radius',
             svg: storeLocator
         },
         {

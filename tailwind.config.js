@@ -6,7 +6,7 @@ module.exports = {
     extend: {
       colors: {
         'myBg': '#E9C95D',
-
+        'loaderBg' :'rgb(var(--overlay-loader))'
       },
     },
     screens: {

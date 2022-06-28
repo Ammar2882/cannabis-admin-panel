@@ -1,13 +1,15 @@
 import { axiosInstance } from '../../constants/axiosInstance';
 import { ACTION_TYPES } from '../ActionTypes/ActionTypes';
+import { selectProgressBarState } from './ProgressBarActions';
 
 
 
 export const getUnApprovedDrivers = () => {
     return async (dispatch) => {
+        dispatch(selectProgressBarState(true))
         const res = await axiosInstance.get('/api/v1/driver/getalldrivers')
         if (res.data.success === true) {
-
+            dispatch(selectProgressBarState(false))
             dispatch({
                 type: ACTION_TYPES.GET_UNAPPROVED_DRIVERS,
                 payload: res.data.data
@@ -15,6 +17,7 @@ export const getUnApprovedDrivers = () => {
         }
         else {
             alert.show('No Un Approved Drivers Found')
+            dispatch(selectProgressBarState(false))
             dispatch({
                 type: ACTION_TYPES.GET_UNAPPROVED_DRIVERS,
                 payload: []

@@ -4,6 +4,7 @@ import { getProducts } from "../../redux/Actions/ProductActions"
 import { useSelector, useDispatch } from "react-redux"
 import { Modal } from "../minor-components/Modal"
 import { AddProductsForm } from "../minor-components/AddProductsForm"
+import { Loader } from "../minor-components/Loader"
 
 const tableColumnsReal = [
     'Photo',
@@ -25,6 +26,9 @@ export const Products = () => {
     const { products } = useSelector(
         (state) => state.productReducer
     );
+    const loading = useSelector(
+        (state) => state.ProgressBarReducer
+    );
 
     useEffect(() => {
         dispatch(getProducts())
@@ -35,6 +39,7 @@ export const Products = () => {
 
         <>
             <div className="bg-gray-50   z-0">
+            {!loading ? (
                 <div className=" mt-24 bg-gray-50 ml-[20%]  w-[78%]">
                     <div className="flex items-center justify-end py-4 px-4">
                         <button onClick={() => {
@@ -56,6 +61,10 @@ export const Products = () => {
                             )
                     }
                 </div>
+            ):(
+                <Loader />
+            )}
+               
             </div>
         </>
     )

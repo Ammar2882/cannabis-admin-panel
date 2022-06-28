@@ -7,7 +7,8 @@ import { SideAndNavbar } from "./components/major-components/SideAndNavbar";
 import { Products } from './components/major-components/Products'
 import { Orders } from "./components/major-components/Orders";
 import { Drivers } from "./components/major-components/Drivers";
-import { Categories } from "./components/major-components/Categories";
+import { Tax } from "./components/major-components/Tax";
+import { Radius } from "./components/major-components/Radius";
 
 
 function App() {
@@ -22,7 +23,8 @@ function App() {
             <Route path='products' element={<Products />} />
             <Route path='orders' element={<Orders />} />
             <Route path='drivers' element={<Drivers />} />
-            <Route path='categories' element={<Categories />} />
+            <Route path='tax' element={<Tax />} />
+            <Route path='radius' element={<Radius />} />
           </Route>
         </Routes>
       </Router>
