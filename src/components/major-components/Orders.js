@@ -18,8 +18,10 @@ const ordersColumns = [
 
 ]
 export const Orders = () => {
-    // const [loading , setLoading] = useState(false)
-    const [forceReload , setForceReload] = useState(false)
+    const token = useSelector(
+        (state) => state.ProfileReducer
+    );
+    const [forceReload, setForceReload] = useState(false)
     const [pendingOrders, setPendingOrders] = useState([])
     const [approvedOrders, setApprovedOrders] = useState([])
     const [acceptedOrders, setAcceptedOrders] = useState([])
@@ -28,20 +30,26 @@ export const Orders = () => {
     const loading = useSelector(
         (state) => state.ProgressBarReducer
     );
-
     useEffect(() => {
-        getAllOrders()
-    }, [forceReload])
-   
+        if (token) {
+            getAllOrders()
+        }
+
+    }, [forceReload, token])
+
     const getAllOrders = async () => {
         dispatch(selectProgressBarState(true))
-        const orders = await axiosInstance.get(`/api/v1/order/getallordersadmin`)
+        const orders = await axiosInstance.get(`/api/v1/order/getallordersadmin`, {
+            headers: {
+                "Authorization": token
+            }
+        })
         if (orders.data.success) {
             let filteredData = orders?.data?.data?.pendingOrder.map((item) => {
                 return {
-                    id:item._id,
+                    id: item._id,
                     productName: item.details.map((item2) => {
-                        return item2.productId.name
+                        return item2?.productId?.name ?? 'product not available'
                     }).join(" / "),
                     productQuantity: item.details.map((item2) => {
                         return item2.quantity
@@ -57,9 +65,9 @@ export const Orders = () => {
             setPendingOrders(filteredData)
             let filteredDataApproved = orders?.data?.data?.approvedOrder.map((item) => {
                 return {
-                    id:item._id,
+                    id: item._id,
                     productName: item.details.map((item2) => {
-                        return item2.productId.name
+                        return item2?.productId?.name ?? 'product not available'
                     }).join(" / "),
                     productQuantity: item.details.map((item2) => {
                         return item2.quantity
@@ -75,9 +83,9 @@ export const Orders = () => {
             setApprovedOrders(filteredDataApproved)
             let filteredDataAccepted = orders?.data?.data?.acceptedOrder.map((item) => {
                 return {
-                    id:item._id,
+                    id: item._id,
                     productName: item.details.map((item2) => {
-                        return item2.productId.name
+                        return item2?.productId?.name ?? 'product not available'
                     }).join(" / "),
                     productQuantity: item.details.map((item2) => {
                         return item2.quantity
@@ -93,9 +101,9 @@ export const Orders = () => {
             setAcceptedOrders(filteredDataAccepted)
             let filteredDataCompleted = orders?.data?.data?.completedOrder.map((item) => {
                 return {
-                    id:item._id,
+                    id: item._id,
                     productName: item.details.map((item2) => {
-                        return item2.productId.name
+                        return item2?.productId?.name ?? 'product not available'
                     }).join(" / "),
                     productQuantity: item.details.map((item2) => {
                         return item2.quantity
@@ -111,51 +119,56 @@ export const Orders = () => {
             setCompletedOrders(filteredDataCompleted)
             dispatch(selectProgressBarState(false))
         }
-        else{
+        else {
             dispatch(selectProgressBarState(false))
         }
 
     }
-
-
     return (
         <>
             <div className={`py-8 bg-gray-50 min-h-screen`}>
-            <div className={`bg-gray-50 ml-[20%]  w-[78%] mt-24 `}>
-            {!loading ? (
-                <div className="bg-gray-50">
-                    <div className=" mt-12">
-                        <div className='flex flex-col '>
-                            {pendingOrders.length !== 0 && !loading ?
-                                <Table title={"Pending Orders"} key={parseInt(Math.random() * 10000)} forceReload={forceReload} setForceReload={setForceReload} pendingOrders={true} ordersColumns={ordersColumns} ordersData={pendingOrders} /> :  <div className="flex justify-center items-center py-8 text-lg">No Orders Found</div>
-                                }
-                        </div>
-                    </div>
-                
-                    <div className=" mt-12">
-                        <div className='flex flex-col '>
-                            {approvedOrders.length !== 0 ?
-                                <Table title={"Approved Orders"} key={parseInt(Math.random() * 10000)} ordersColumns={ordersColumns} ordersData={approvedOrders} /> : <div className="flex justify-center items-center py-8 text-lg">No Orders Found</div>}
-                        </div>
-                    </div>
-                    <div className=" mt-12">
-                        <div className='flex flex-col '>
-                            {acceptedOrders.length !== 0 ?
-                                <Table title={"Accepted Orders"} key={parseInt(Math.random() * 10000)}  ordersColumns={ordersColumns} ordersData={acceptedOrders} /> : <div className="flex justify-center items-center py-8 text-lg">No Orders Found</div>}
-                        </div>
-                    </div>
-                    <div className=" mt-12">
-                        <div className='flex flex-col '>
-                            {completedOrders.length !== 0 ?
-                                <Table title={"Completed Orders"} key={parseInt(Math.random() * 10000)} ordersColumns={ordersColumns} ordersData={completedOrders} /> : <div className="flex justify-center items-center py-8 text-lg">No Orders Found</div>}
-                        </div>
-                    </div>
-                </div>
+                <div className={`bg-gray-50 ml-[20%]  w-[78%] mt-24 `}>
+                    {!loading ? (
+                        <div className="bg-gray-50">
+                            <div className=" mt-12">
+                                <div className='flex flex-col '>
+                                    {pendingOrders.length !== 0 && !loading ?
+                                        <Table type={"orders"} title={"Pending Orders"} forceReload={forceReload} setForceReload={setForceReload} pendingOrders={true} ordersColumns={ordersColumns} ordersData={pendingOrders} /> :
+                                        <div className='divide-y  divide-gray-100 bg-white rounded-lg  shadow-lg'>
+                                            <div className='px-5 pt-4  h-10 my-0 flex flex-col items-start justify-between'>
+                                                <h2 className='font-semibold text-gray-800 text-lg'>Pending Orders</h2>
+                                                <p className='text-xs'>Details</p>
+                                            </div>
+                                            <div className="flex justify-center items-center py-8 text-lg">No Orders Found</div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
 
-            ):(
-                <Loader />
-            )}
-            </div>
+                            <div className=" mt-12">
+                                <div className='flex flex-col '>
+                                    {approvedOrders.length !== 0 ?
+                                        <Table type={"orders"} title={"Approved Orders"} ordersColumns={ordersColumns} ordersData={approvedOrders} /> : <div className="flex justify-center items-center py-8 text-lg">No Orders Found</div>}
+                                </div>
+                            </div>
+                            <div className=" mt-12">
+                                <div className='flex flex-col '>
+                                    {acceptedOrders.length !== 0 ?
+                                        <Table type={"orders"} title={"Accepted Orders"} ordersColumns={ordersColumns} ordersData={acceptedOrders} /> : <div className="flex justify-center items-center py-8 text-lg">No Orders Found</div>}
+                                </div>
+                            </div>
+                            <div className=" mt-12">
+                                <div className='flex flex-col '>
+                                    {completedOrders.length !== 0 ?
+                                        <Table type={"orders"} title={"Completed Orders"} ordersColumns={ordersColumns} ordersData={completedOrders} /> : <div className="flex justify-center items-center py-8 text-lg">No Orders Found</div>}
+                                </div>
+                            </div>
+                        </div>
+
+                    ) : (
+                        <Loader />
+                    )}
+                </div>
             </div>
         </>
 

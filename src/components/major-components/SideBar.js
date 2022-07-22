@@ -13,66 +13,66 @@ import websiteSetting from '../../assets/website-setting.svg'
 import logout from '../../assets/logout.svg'
 import { IconBg } from '../minor-components/IconBg'
 import rightArrow from '../../assets/right-arrow.svg'
-import { NavLink } from 'react-router-dom'
+import { Navigate, NavLink, useNavigate } from 'react-router-dom'
 
 
 const SideBar = () => {
-
+    const navigate = useNavigate()
     const sidebarData = [
         {
             title: 'Dashboard',
-            path: '/main',
+            path: '/',
             svg: dashboardHome,
 
 
         },
         {
             title: 'Products',
-            path: '/main/products',
+            path: '/products',
             svg: product,
 
         },
         {
             title: 'Orders',
-            path: '/main/orders',
+            path: '/orders',
             svg: order,
 
         },
         {
             title: 'Drivers',
-            path: '/main/drivers',
+            path: '/drivers',
             svg: driver
         },
         {
             title: 'Tax',
-            path: '/main/tax',
+            path: '/tax',
             svg: category
         },
-        {
-            title: 'Customers',
-            path: '/customers',
-            svg: customer
-        },
-        {
-            title: 'Sales-Promotions',
-            path: '/salespromotions',
-            svg: salesPromotion
-        },
-        {
-            title: 'Accounts',
-            path: '/accounts',
-            svg: account
-        },
+        // {
+        //     title: 'Customers',
+        //     path: '/customers',
+        //     svg: customer
+        // },
+        // {
+        //     title: 'Sales-Promotions',
+        //     path: '/salespromotions',
+        //     svg: salesPromotion
+        // },
+        // {
+        //     title: 'Account',
+        //     path: '/account',
+        //     svg: account
+        // },
         {
             title: 'Radius',
-            path: '/main/radius',
+            path: '/radius',
             svg: storeLocator
         },
-        {
-            title: 'Website Setting',
-            path: '/websitesettings',
-            svg: websiteSetting
-        },
+        // {
+        //     title: 'Website Setting',
+        //     path: '/websitesettings',
+        //     svg: websiteSetting
+        // },
         {
             title: 'Logout',
             path: '/logout',
@@ -93,11 +93,17 @@ const SideBar = () => {
                         <li key={index} className={` font-semibold p-5 flex justify-between items-center cursor-pointer`}>
                             <IconBg svg={item.svg} />
                             <div className='flex-1 flex justify-between items-center flex-shrink-0 pl-[20%] text-xs'>
-                                <NavLink to={item.path}
-
-                                >
-                                    {item.title}
+                                {item.path === '/logout' ? (
+                                    <p className='text-gray-800' onClick={()=>{
+                                        localStorage.removeItem('token')
+                                        navigate('/login')
+                                    }}>{item.title}</p>
+                                ):(
+                                <NavLink end to={item.path}   className={({ isActive }) => (isActive ? 'text-myBg' : 'text-gray-800')}>
+                                     {item.title}
                                 </NavLink>
+                                )}
+                            
                                 <img className='w-[5px]' src={rightArrow} alt='rightarrow' />
                             </div>
                         </li>

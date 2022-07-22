@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GoogleMap, useJsApiLoader, Marker, Circle } from "@react-google-maps/api";
+import { GoogleMap, Marker, Circle } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
@@ -14,14 +14,14 @@ import {
 import { useAlert } from 'react-alert'
 import "@reach/combobox/styles.css";
 import { axiosInstance } from "../../constants/axiosInstance";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectProgressBarState } from "../../redux/Actions/ProgressBarActions";
 import { Loader } from "./Loader";
 //map constants
-const places = ["places"]
+
 const containerStyle = {
-  width: '1000px',
-  height: '800px'
+  width: "90%",
+  height: '80vh'
 };
 const center = { lat: 40.7810694898019, lng: -102.88417905250878 }
 
@@ -31,88 +31,98 @@ export default function Places() {
   const [formattedAddress, setFormattedAddress] = useState('')
   const [placesArr, setPlacesArr] = useState([])
   const [count, setCount] = useState(0)
-  const [render ,setRender] = useState(false)
+  const [render, setRender] = useState(false)
   const alert = useAlert()
 
   const dispatch = useDispatch()
   const loading = useSelector(
-      (state) => state.ProgressBarReducer
+    (state) => state.ProgressBarReducer
+  );
+  const token = useSelector(
+    (state) => state.ProfileReducer
   );
 
   useEffect(() => {
-    getRadius()
-  }, [render])
+    if(token){
+      getRadius()
+    }
+  }, [render,token])
   const getRadius = async () => {
     dispatch(selectProgressBarState(true))
-    const res = await axiosInstance.get('/api/v1/admin/getradius')
+    const res = await axiosInstance.get('/api/v1/admin/getradius',{
+      headers:{
+        authorization:token
+      }
+    })
     if (res.data.success) {
       dispatch(selectProgressBarState(false))
       console.log(res.data.data, " :radius data")
       setPlacesArr(res.data.data)
       setCount(count + res.data.data.length)
     }
-    else{
+    else {
       dispatch(selectProgressBarState(false))
       alert.show('No Radius Found')
     }
   }
   const setRadiusApi = async () => {
     dispatch(selectProgressBarState(true))
-    const res = await axiosInstance.post('/api/v1/admin/setradius', placesArr)
+    const res = await axiosInstance.post('/api/v1/admin/setradius', placesArr,{
+      headers:{
+        authorization:token
+      }
+    })
     if (res.data.success) {
       dispatch(selectProgressBarState(false))
       alert.show('radius added successfully',
-      {
-        onClose: () => {
+        {
+          onClose: () => {
             getRadius()
             setCount(0)
             setRender(!render)
-        }
-    })
+          }
+        })
     }
     else {
+      console.log('got here')
       dispatch(selectProgressBarState(false))
       alert.show('could not save radius')
     }
   }
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyASE7MqDo7TNZ_4fmORznk_JMBFm0d_pKY',
-    libraries: places,
-  });
   return (
     <>
       {!loading ? (
         <div className='divide-y py-8 divide-gray-100 bg-white rounded-lg  shadow-lg'>
-        <div className="flex flex-col items-center justify-between gap-4">
-          <PlacesAutocomplete setSelected={setSelected} selected={selected} radius={radius} setRadius={setRadius} setFormattedAddress={setFormattedAddress} />
-          {isLoaded ? <div><Map selected={selected} radius={radius} /></div> : <div>Loading.....</div>}
-          {selected && radius &&
-            <button onClick={() => {
-              setPlacesArr([...placesArr, {
-                geometry: { coordinates: [selected.lat, selected.lng] },
-                radius: radius,
-                formattedAddress: formattedAddress
-              }])
-              setRadius('')
-              setSelected(null)
-              setFormattedAddress('')
-              setCount(count++)
-            }} className='py-2 px-4 bg-myBg text-xs rounded-lg hover:bg-[#efca37]'>
-              Add Place
-            </button>
+          <div className="flex flex-col items-center justify-between gap-4">
+            <PlacesAutocomplete setSelected={setSelected} selected={selected} radius={radius} setRadius={setRadius} setFormattedAddress={setFormattedAddress} />
+            <Map selected={selected} radius={radius} />
+            {selected && radius &&
+              <button onClick={() => {
+                setPlacesArr([...placesArr, {
+                  geometry: { coordinates: [selected.lat, selected.lng] },
+                  radius: radius,
+                  formattedAddress: formattedAddress
+                }])
+                setRadius('')
+                setSelected(null)
+                setFormattedAddress('')
+                setCount((count)=>count+1)
+              }} className='py-2 px-4 bg-myBg text-xs rounded-lg hover:bg-[#efca37]'>
+                Add Place
+              </button>
+            }
+          </div>
+          {
+            placesArr.length > 0 ?
+              <div className="mx-8">
+                <Areas placesArr={placesArr} setPlacesArr={setPlacesArr} setRadiusApi={setRadiusApi} count={count} setCount={setCount} />
+              </div>
+              :
+              null
           }
         </div>
-        {
-          placesArr.length > 0 ?
-            <div className="mx-8">
-              <Areas placesArr={placesArr} setPlacesArr={setPlacesArr} setRadiusApi={setRadiusApi} count={count} setCount={setCount}/>
-            </div>
-            :
-            null
-        }
-      </div>
-      ) :(
+      ) : (
         <Loader />
       )}
     </>
@@ -199,7 +209,7 @@ const PlacesAutocomplete = ({ setSelected, selected, setRadius, radius, setForma
   );
 };
 
-const Areas = ({ placesArr, setPlacesArr, setRadiusApi,count,setCount }) => {
+const Areas = ({ placesArr, setPlacesArr, setRadiusApi, count, setCount }) => {
   return (
     <div className="flex flex-col  justify-center h-full py-4">
       <div className="w-full  mx-auto bg-white shadow-lg rounded-sm ">
@@ -256,8 +266,8 @@ const Areas = ({ placesArr, setPlacesArr, setRadiusApi,count,setCount }) => {
           </div>
         </div>
       </div>
-      {console.log(count ,  "---" , placesArr.length)}
-      {count != placesArr.length ?
+      {console.log(count, "---", placesArr.length)}
+      {count !== placesArr.length ?
         <button
           onClick={() => setRadiusApi()}
           className='py-2 mx-auto my-4 px-4 bg-myBg text-xs rounded-lg hover:bg-[#efca37]'>

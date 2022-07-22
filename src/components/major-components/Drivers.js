@@ -20,16 +20,18 @@ const unApprovedDrivers = [
 export const Drivers = () => {
     const dispatch = useDispatch()
 
-
+    const token = useSelector(
+        (state) => state.ProfileReducer
+    );
     const { unapprovedDrivers } = useSelector(
         (state) => state.driversReducer
     );
     const loading = useSelector(
         (state) => state.ProgressBarReducer
     );
-    console.log(loading , " :redux loading screen")
+   
     useEffect(() => {
-        dispatch(getUnApprovedDrivers())
+        dispatch(getUnApprovedDrivers(token))
     }, [])
 
 

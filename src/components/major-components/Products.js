@@ -18,6 +18,9 @@ const tableColumnsReal = [
     'Actions'
 ]
 export const Products = () => {
+    const token = useSelector(
+        (state) => state.ProfileReducer
+    );
     const dispatch = useDispatch()
     const [isOpen, setIsOpen] = useState(false)
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
@@ -31,12 +34,12 @@ export const Products = () => {
     );
 
     useEffect(() => {
-        dispatch(getProducts())
-    }, [isOpen, isUpdateOpen])
-
+        if(token){
+            dispatch(getProducts(token))
+        }
+    }, [isOpen, isUpdateOpen,token])
 
     return (
-
         <>
             <div className="bg-gray-50   z-0">
             {!loading ? (

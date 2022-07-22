@@ -55,7 +55,9 @@ const SignupSchema = Yup.object().shape({
 });
 
 export const AddProductsForm = (props) => {
-    console.log('these are props : ', props)
+    const token = useSelector(
+        (state) => state.ProfileReducer
+    );
     const status = !props.isAdd ? props.isAdd : true
     const alert = useAlert()
     const navigate = useNavigate()
@@ -67,7 +69,6 @@ export const AddProductsForm = (props) => {
         (state) => state.productReducer
     );
     useEffect(() => {
-        console.log('in useEffect item id : ', global.editId)
         if (!status) {
             setEditItem(products.filter(
                 (product) => product._id === global.editId
@@ -121,16 +122,16 @@ export const AddProductsForm = (props) => {
                                             if (imgCheck) {
                                                 let image = values.productPhoto
                                                 formData.append('image', image)
-                                                dispatch(updateProduct(values, formData, navigate, alert, props.modal))
+                                                dispatch(updateProduct(values, formData, navigate, alert, props.modal,token))
                                             }
                                             else {
-                                                dispatch(updateProduct(values, formData, navigate, alert, props.modal))
+                                                dispatch(updateProduct(values, formData, navigate, alert, props.modal,token))
                                             }
                                         }
                                         else {
                                             let image = values.productPhoto
                                             formData.append('image', image)
-                                            dispatch(addProduct(values, formData, navigate, alert, props.modal))
+                                            dispatch(addProduct(values, formData, navigate, alert, props.modal,token))
                                         }
                                     }}
                                 >

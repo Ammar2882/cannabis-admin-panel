@@ -3,20 +3,27 @@ import { Menu, Transition } from '@headlessui/react'
 import { useNavigate } from 'react-router'
 import { Link } from 'react-router-dom'
 import dropDown from '../../assets/down-arrow.svg'
-import { useDispatch } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
 import { updateDriverStatus } from '../../redux/Actions/DriverActions'
 import { useAlert } from 'react-alert'
 import { axiosInstance } from '../../constants/axiosInstance'
 import { selectProgressBarState } from '../../redux/Actions/ProgressBarActions'
 export const Dropdown = ({ verified, blocked, id,orders,forceReload,setForceReload}) => {
+    const token = useSelector(
+        (state) => state.ProfileReducer
+    );
     const dispatch = useDispatch()
     const alert = useAlert()
     const navigate = useNavigate()
     const updateOrderStatus=async()=>{
         dispatch(selectProgressBarState(true))
-        const updatedOrder = await axiosInstance.patch('api/v1/order/updateorderstatusadmin',{status:1},{params:{
+        let options = {params:{
             orderId:id
-        }})
+        },
+        headers:{
+            "Authorization":token
+        }}
+        const updatedOrder = await axiosInstance.patch('api/v1/order/updateorderstatusadmin',{status:1},options)
         if(updatedOrder.data.success){
             dispatch(selectProgressBarState(false))
             alert.show('Order Updated Successfully')

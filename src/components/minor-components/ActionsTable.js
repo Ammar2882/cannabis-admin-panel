@@ -5,13 +5,15 @@ import { Dropdown } from './DropDown'
 import { useState } from 'react'
 import { useNavigate } from 'react-router';
 import { baseURL } from '../../constants/baseURL';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { deleteProducts } from '../../redux/Actions/ProductActions';
 import { useAlert } from 'react-alert'
 import { Modal } from './Modal';
 import { AddProductsForm } from './AddProductsForm';
 export const ActionsTable = (props) => {
-
+    const token = useSelector(
+        (state) => state.ProfileReducer
+    );
     const checkBox = props.checkBox ? props.checkBox : false
     const isProduct = props.isProduct ? props.isProduct : false
     const [selectedID, setSelectedID] = useState([])
@@ -63,8 +65,8 @@ export const ActionsTable = (props) => {
             <div className='py-2 bg-gray-50'>
                 <div className='divide-y  divide-gray-100 bg-white rounded-lg  shadow-lg'>
                     <div className='px-5 pt-4 h-10 my-0 flex flex-col items-start justify-between'>
-                        <h2 className='font-semibold text-gray-800 text-lg'>Order List</h2>
-                        <p className='text-xs'>Lorem Ipsum Lorem Ipsum</p>
+                        <h2 className='font-semibold text-gray-800 text-lg'>Products</h2>
+                        <p className='text-xs'>Details</p>
                     </div>
                     <div className="w-full px-4 py-4 my-8 bg-white ">
                         <div className="flex items-start justify-between">
@@ -97,7 +99,7 @@ export const ActionsTable = (props) => {
                                          rounded-sm w-18 h-8"
                                 />
                                 <div>
-                                    {!selectedID.length <= 0 ? <button onClick={() => dispatch(deleteProducts(selectedID, navigate, alert))} className='py-2 px-4 bg-myBg text-xs '>Delete Selected Product</button> : ''}
+                                    {!selectedID.length <= 0 ? <button onClick={() => dispatch(deleteProducts(selectedID, navigate, alert,token))} className='py-2 px-4 bg-myBg text-xs '>Delete Selected Product</button> : ''}
                                 </div>
                             </div>
                         </div>
@@ -268,8 +270,8 @@ export const ActionsTable = (props) => {
             <div className='py-2 bg-gray-50'>
                 <div className='divide-y  divide-gray-100 bg-white rounded-lg  shadow-lg'>
                     <div className='px-5 pt-4 h-10 my-0 flex flex-col items-start justify-between'>
-                        <h2 className='font-semibold text-gray-800 text-lg'>New Drivers</h2>
-                        <p className='text-xs'>Lorem Ipsum Lorem Ipsum</p>
+                        <h2 className='font-semibold text-gray-800 text-lg'>Drivers</h2>
+                        <p className='text-xs'>Details</p>
                     </div>
                     <div className="w-full px-4 py-4 my-8 bg-white ">
                         <div className="flex items-start justify-between">
