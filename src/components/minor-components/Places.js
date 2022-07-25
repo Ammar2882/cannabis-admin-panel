@@ -30,7 +30,7 @@ export default function Places() {
   const [radius, setRadius] = useState('');
   const [formattedAddress, setFormattedAddress] = useState('')
   const [placesArr, setPlacesArr] = useState([])
-  const [count, setCount] = useState(0)
+  const [newRadius , setNewRadius] = useState({})
   const [render, setRender] = useState(false)
   const alert = useAlert()
 
@@ -56,18 +56,41 @@ export default function Places() {
     })
     if (res.data.success) {
       dispatch(selectProgressBarState(false))
-      console.log(res.data.data, " :radius data")
       setPlacesArr(res.data.data)
-      setCount(count + res.data.data.length)
     }
     else {
       dispatch(selectProgressBarState(false))
       alert.show('No Radius Found')
     }
   }
-  const setRadiusApi = async () => {
+  const deleteRadius = async (id)=>{
     dispatch(selectProgressBarState(true))
-    const res = await axiosInstance.post('/api/v1/admin/setradius', placesArr,{
+    let options = {
+      params: {
+          id:id     
+      }, 
+      headers: {
+          "Authorization":token
+      }
+  }
+    const res = await axiosInstance.delete('/api/v1/admin/deleteradius',options)
+    if (res.data.success) {
+      dispatch(selectProgressBarState(false))
+      alert.show('radius deleted successfully',
+        {
+          onClose: () => {
+            setRender(!render)
+          }
+        })
+    }
+    else {
+      dispatch(selectProgressBarState(false))
+      alert.show('could not delete radius')
+    }
+  }
+  const setRadiusApi = async (obj) => {
+    dispatch(selectProgressBarState(true))
+    const res = await axiosInstance.post('/api/v1/admin/setradius', obj,{
       headers:{
         authorization:token
       }
@@ -77,14 +100,11 @@ export default function Places() {
       alert.show('radius added successfully',
         {
           onClose: () => {
-            getRadius()
-            setCount(0)
             setRender(!render)
           }
         })
     }
     else {
-      console.log('got here')
       dispatch(selectProgressBarState(false))
       alert.show('could not save radius')
     }
@@ -99,15 +119,15 @@ export default function Places() {
             <Map selected={selected} radius={radius} />
             {selected && radius &&
               <button onClick={() => {
-                setPlacesArr([...placesArr, {
+                let obj = {
                   geometry: { coordinates: [selected.lat, selected.lng] },
                   radius: radius,
                   formattedAddress: formattedAddress
-                }])
+                }
+                setRadiusApi(obj)
                 setRadius('')
                 setSelected(null)
                 setFormattedAddress('')
-                setCount((count)=>count+1)
               }} className='py-2 px-4 bg-myBg text-xs rounded-lg hover:bg-[#efca37]'>
                 Add Place
               </button>
@@ -116,7 +136,7 @@ export default function Places() {
           {
             placesArr.length > 0 ?
               <div className="mx-8">
-                <Areas placesArr={placesArr} setPlacesArr={setPlacesArr} setRadiusApi={setRadiusApi} count={count} setCount={setCount} />
+                <Areas placesArr={placesArr} setPlacesArr={setPlacesArr} setRadiusApi={setRadiusApi} deleteRadius={deleteRadius} />
               </div>
               :
               null
@@ -209,7 +229,7 @@ const PlacesAutocomplete = ({ setSelected, selected, setRadius, radius, setForma
   );
 };
 
-const Areas = ({ placesArr, setPlacesArr, setRadiusApi, count, setCount }) => {
+const Areas = ({ placesArr, setPlacesArr, setRadiusApi,deleteRadius}) => {
   return (
     <div className="flex flex-col  justify-center h-full py-4">
       <div className="w-full  mx-auto bg-white shadow-lg rounded-sm ">
@@ -247,13 +267,7 @@ const Areas = ({ placesArr, setPlacesArr, setRadiusApi, count, setCount }) => {
                     <td className={`text-left  px-2 py-8 whitespace-nowrap ${index % 2 !== 0 ? 'bg-white' : 'bg-gray-50'}`}>
                       <p className={`text-left text-md `}>
                         <button
-                          onClick={() => {
-                            setPlacesArr(placesArr.filter((rem) => {
-                              return placesArr.indexOf(rem) !== index
-                            }))
-                            setCount(count--)
-
-                          }}
+                          onClick={() => deleteRadius(item._id)}
                           className='py-2 px-4 bg-myBg text-xs rounded-lg hover:bg-[#efca37]'>
                           Remove
                         </button>
@@ -266,7 +280,7 @@ const Areas = ({ placesArr, setPlacesArr, setRadiusApi, count, setCount }) => {
           </div>
         </div>
       </div>
-      {console.log(count, "---", placesArr.length)}
+      {/* {console.log(count, "---", placesArr.length)}
       {count !== placesArr.length ?
         <button
           onClick={() => setRadiusApi()}
@@ -274,7 +288,7 @@ const Areas = ({ placesArr, setPlacesArr, setRadiusApi, count, setCount }) => {
           Update
         </button>
         :
-        null}
+        null} */}
     </div>
   )
 }

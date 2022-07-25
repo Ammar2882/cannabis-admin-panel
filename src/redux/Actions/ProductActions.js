@@ -5,17 +5,18 @@ import { selectProgressBarState } from './ProgressBarActions';
 export const addProduct = (values, formData, navigate, alert, setIsOpen,token) => {
 
     return async (dispatch) => {
-
-        const res = await axiosInstance.post('/api/v1/product/addproduct', formData, {
+        let options = {
             params: {
-                values: values,
-            }
-        }, {
+                values:values
+              
+            }, 
             headers: {
                 'Content-Type': 'multipart/form-data',
                 "Authorization":token
             }
-        })
+        }
+
+        const res = await axiosInstance.post('/api/v1/product/addproduct', formData, options)
         if (res.data.success === true) {
 
             alert.show('product added successfully', {
